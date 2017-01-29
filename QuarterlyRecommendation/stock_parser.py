@@ -7,7 +7,9 @@ class StockParser():
 		self.stock_info = {}
 
 	def get_stock_data(self, stock_url):
-		content = requests.get(stock_url).content
+		print 'stock_url', stock_url
+		content = requests.get(stock_url).text
+		print 'done'
 		self.soup = BeautifulSoup(content)
 		for method_name in dir(self):
 			if method_name.startswith("fetch"):
@@ -68,6 +70,11 @@ class StockParser():
 			sell_percentage = sell_percentage_tag.get("style")
 			sell_percentage = ''.join(x for x in sell_percentage if x.isdigit())
 			self.stock_info["recommended_to_sell"] = int(sell_percentage)
+
+	def fetch_current_price(self):
+		current_price_tag = self.soup.find("span",{"id":"Bse_Prc_tick"})
+		if current_price_tag:
+			self.stock_info["current_price"] = float(current_price_tag.string)
 
 
 

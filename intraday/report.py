@@ -11,7 +11,7 @@ class Report:
 
 	def generate(self):
 		csv_file = csv.writer(open(self.report_file_path + self.file_name,'w'))
-		columns = ['sector', 'company_name','current_price', 'open_price', 'prev_close', '52_week_high','52_week_low','today_low', 'today_high', 'buy_qty', 'sell_qty', 'recommended_to_sell', 'recommended_to_buy', 'bullish']
+		columns = ['sector', 'company_name','current_price', 'open_price', 'prev_close', '52_week_high','52_week_low','today_low', 'today_high', 'buy_qty', 'sell_qty', 'recommended_to_sell', 'recommended_to_buy', 'bullish', 'buy_percentage', 'sell_percentage', 'change','gap']
 		csv_file.writerow(columns)
 		for row in self.stock_data:
 			csv_file.writerow(map( lambda x: row.get( x, "" ), columns))

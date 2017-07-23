@@ -30,6 +30,9 @@ var updateCache = function UpdateCache(stockData) {
         eventEmitter.emit('updateDB',{'stockId':stockId, 'currentPrice':currentPrice});
       });
     }
+    else{
+      process.exit();
+    }
 });
 }
 
@@ -40,7 +43,8 @@ var updateDB = function UpdateDB(stockData) {
       var stock = new Stock(stockData);
       stock.save(function(err) {
       if (err) throw err;
-        console.log('stock created');
+        console.log('stock updated');
+        process.exit();
       }); 
     }
   });
@@ -57,8 +61,7 @@ callback = function(response) {
   });
 
   response.on('end', function () {
-    eventEmitter.emit('updateCache',stockData);
-    process.exit();
+    eventEmitter.emit('updateCache',stockData, callback);
   });
 }
 

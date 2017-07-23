@@ -17,7 +17,7 @@ TradeHelper.prototype.updateAccountBalance = function(){
     var user = new User();
     user.getUser(orderData['userId'],function (userData){
     if(userData){
-      var available = userData["accountValue"]; // account value can be taken from zerodha user api as well. 
+      var available = userData['accountValue']; // account value can be taken from zerodha user api as well. 
       var tradedAmount = orderData['quantity'] * orderData['price'];
       var currentBalance = available;
       if(orderData['tradeType'] == 'buy'){
@@ -47,14 +47,14 @@ TradeHelper.prototype.updatePortfolio = function(){
         var portofolio = new Portfolio(orderData);
         portofolio.save(function(err) {
           if (err) throw err;
-            console.log('portofolio updated');
+            console.log('portfolio updated!');
           });   
       }
       else{
         if(orderData['tradeType'] == 'buy'){
           stock['quantity'] += orderData['quantity'];
-          Trade.find({'userId':orderData['userId'],'stockId':orderData['stockId'],"tradeType":"buy"},function(err, trades){
-            var avgBuyPrice = stock["avgBuyPrice"]; 
+          Trade.find({'userId':orderData['userId'],'stockId':orderData['stockId'],'tradeType':'buy'},function(err, trades){
+            var avgBuyPrice = stock['avgBuyPrice']; 
             var total_cost = 0;
             var total_shares = 0;       
             for(var i=0;i<=trades.length-1;i++){
@@ -102,6 +102,9 @@ TradeHelper.prototype.validateRequest = function(){
 }
 
 
+
+// check whether user have enough of balance to buy the stock.
+// check whether user have enough of holding to sell the stock
 TradeHelper.prototype.canPlaceOrder = function(orderData, callback){
   if(orderData){	
   	var user = new User();  
@@ -110,7 +113,7 @@ TradeHelper.prototype.canPlaceOrder = function(orderData, callback){
   		if(userData){
         if(orderData['tradeType'] == 'buy'){
           var available = userData['accountValue']; // account value can be taken from zerodha user api. 
-          var required = orderData['quantity'] * orderData["price"];
+          var required = orderData['quantity'] * orderData['price'];
           if(available < required){
             var errorMsg = 'required: ' + required + ' available: ' + available; 
             callback({'status':false, 'message':errorMsg});
@@ -124,7 +127,7 @@ TradeHelper.prototype.canPlaceOrder = function(orderData, callback){
           Portfolio.find({stockId:orderData['stockId']}, function(err, stock){
             if(err) throw err;
             if(stock && stock['quantity'] >= orderData['quantity'])
-              callback({'status':false});
+              callback({'status':false,'message':'sell quantity is more than holdings'});
             else
              callback({'status':true}); 
           });
@@ -132,7 +135,7 @@ TradeHelper.prototype.canPlaceOrder = function(orderData, callback){
   		} 
   	});
   }
-  callback({'status':false});
 }
+
 
 module.exports = TradeHelper;

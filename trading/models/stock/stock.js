@@ -24,13 +24,16 @@ stockSchema.pre('save', function(next) {
 
 var Stock = mongoose.model('Stock', stockSchema);
 
+// method to get price of the given stock stockId, if price is not available in cache.
+// it will take from database and set it in cache for future reference. 
+
 Stock.prototype.getPrice = function(stockId, callback){
   cache.get(stockId , function(err, price) {
     if(price==null){
       Stock.findOne({ stockId: stockId }, function(err, stock) {
 		  if (err) throw err;
-        cache.set(stockId, stock["price"] , function(err, reply) {
-		    callback(stock["price"]);
+        cache.set(stockId, stock['price'] , function(err, reply) {
+		    callback(stock['price']);
 		  });
       });
     }

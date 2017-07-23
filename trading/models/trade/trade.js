@@ -16,6 +16,7 @@ var tradeSchema = new Schema({
   updatedAt : Date,
   tradeType : { type: String, enum: ['buy', 'sell'] ,required: true},
   quantity  : { type: Number, required: true },
+  status    : { type: String, enum: ['queued', 'pending', 'processed', 'cancelled', 'deleted']}
 });
 
 tradeSchema.pre('save', function(next) {
@@ -27,10 +28,12 @@ tradeSchema.pre('save', function(next) {
 var Trade = mongoose.model('Trade', tradeSchema);
 
 Trade.prototype.placeOrder = function(orderData, success){
+  // make zerodha order api call to place an order.
+  orderData['status'] = 'processed';
 	var trade = new Trade(orderData);
-  trade.save(function(err) {
-  if (err) throw err;
-  success(true);
+  trade.save(function(err, orderId) {   
+  if (err) throw err; 
+  success(true, trade._id);
   });   
 }
 

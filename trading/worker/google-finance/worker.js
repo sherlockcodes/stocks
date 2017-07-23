@@ -16,7 +16,9 @@ var options = {
 
 var eventEmitter = new events.EventEmitter();
 
+// If there is any price change, this function will update in both Redis and Mongo.
 var updateCache = function UpdateCache(stockData) {
+  console.log('updateCache');
   stockData = JSON.parse(stockData.replace('//',''));
   if(stockData.length>=1){
     currentPrice = parseFloat(stockData[0]['l_fix']);
@@ -24,7 +26,8 @@ var updateCache = function UpdateCache(stockData) {
   cache.get(stockId , function(err, price) {
     if(price==null || price != currentPrice){
       cache.set(stockId, currentPrice , function(err, reply) {
-        eventEmitter.emit('updateDB',{"stockId":stockId, "currentPrice":currentPrice});
+        console.log('Price updated for ' + stockId);
+        eventEmitter.emit('updateDB',{'stockId':stockId, 'currentPrice':currentPrice});
       });
     }
 });
@@ -33,7 +36,13 @@ var updateCache = function UpdateCache(stockData) {
 var updateDB = function UpdateDB(stockData) {
   Stock.findOneAndUpdate({ stockId: stockData.stockId }, { currentPrice: stockData.currentPrice }, function(err, stock) {
   if (err) throw err;
-    console.log(stock);
+    if(stock==null){
+      var stock = new Stock(stockData);
+      stock.save(function(err) {
+      if (err) throw err;
+        console.log('stock created');
+      }); 
+    }
   });
 }
 
@@ -49,6 +58,7 @@ callback = function(response) {
 
   response.on('end', function () {
     eventEmitter.emit('updateCache',stockData);
+    process.exit();
   });
 }
 

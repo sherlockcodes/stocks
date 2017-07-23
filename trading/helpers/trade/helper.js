@@ -124,12 +124,14 @@ TradeHelper.prototype.canPlaceOrder = function(orderData, callback){
         }
         else{
           // to-do, check whether given number of stock is available to sell in portfolio
-          Portfolio.find({stockId:orderData['stockId']}, function(err, stock){
+          Portfolio.find({stockId:orderData['stockId'],userId:orderData['userId']}, function(err, stock){
             if(err) throw err;
-            if(stock && stock['quantity'] >= orderData['quantity'])
-              callback({'status':false,'message':'sell quantity is more than holdings'});
-            else
-             callback({'status':true}); 
+            if(stock.length>0){
+              if(stock[0] && stock[0]['quantity'] < orderData['quantity'])
+                callback({'status':false,'message':'sell quantity is more than holdings'});
+              else
+                callback({'status':true}); 
+            }
           });
         }  			
   		} 

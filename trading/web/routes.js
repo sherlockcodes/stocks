@@ -12,13 +12,20 @@ module.exports = function(app){
       var helper = new TradeHelper(req.body)
       var resp = helper.validateRequest();
       if(resp && resp['status']){
-        var orderData = {'stockId':req.body.stockId, 'userId': req.body.userId, 'tradeType':req.body.tradeType, 'quantity':req.body.quantity}        
+        var orderData = {'stockId':req.body.stockId, 'userId': req.body.userId, 'tradeType':req.body.tradeType, 'quantity':req.body.quantity, 'price':req.body.price}        
         helper.canPlaceOrder(orderData, function(resp){
           console.log('resp'+resp);
           if(resp && resp["status"]){
             var order = Order()
-            resp = order.placeOrder(orderData);
-            res.json(resp);
+            order.placeOrder(orderData,function(success){
+              // send socket update saying order is completed. 
+              console.log('placeOrder res'+success)
+              if(success){
+                helper.updateAccountBalance();
+                helper.updatePortfolio();
+                // res.json({"status":true});  
+              }                         
+            });
           }
           else{
             res.json(resp);

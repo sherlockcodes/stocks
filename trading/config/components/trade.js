@@ -2,7 +2,7 @@
 
 const config = {
   trade : {
-    MANDATORY_FIELDS : ['stockId', 'tradeType', 'userId', 'quantity']
+    MANDATORY_FIELDS : ['stockId', 'tradeType', 'userId', 'quantity', 'price']
   }
 }
 

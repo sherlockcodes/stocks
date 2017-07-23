@@ -6,7 +6,7 @@ const config = require('../../config/components/mongo.js');
 mongoose.connect('mongodb://' + config.mongo.IP + '/stocks');
 var Schema = mongoose.Schema;
 
-var portofolioSchema = new Schema({
+var portfolioSchema = new Schema({
   stockId: { type: String, required: true },
   userId : String,
   avgBuyPrice : Number,

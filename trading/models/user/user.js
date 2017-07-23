@@ -23,10 +23,8 @@ userSchema.pre('save', function(next) {
 var User = mongoose.model('User', userSchema);
 
 User.prototype.getUser = function(userId, callback){
-  console.log("getUser"+userId);
   User.findOne({ userId: userId }, function(err, user) {
 	  if (err) throw err;  
-    console.log('user'+user);   
     callback(user);
 	  });
 }

@@ -6,7 +6,7 @@ var events = require('events');
 const config = require('../../config/components/mongo.js');
 const Stock = require('../../models/stock/stock.js');
 
-mongoose.createConnection('mongodb://' + config.mongo.IP + '/stocks');
+mongoose.createConnection('mongodb://' + config.mongo.IP + '/stocks',{ useMongoClient: true });
 var Schema = mongoose.Schema;
 
 var tradeSchema = new Schema({

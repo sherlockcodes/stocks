@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 const config = require('../../config/components/mongo.js');
 
-mongoose.connect('mongodb://' + config.mongo.IP + '/stocks');
+mongoose.connect('mongodb://' + config.mongo.IP + '/stocks',{ useMongoClient: true });
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({

@@ -47,6 +47,9 @@ var updateDB = function UpdateDB(stockData) {
         process.exit();
       }); 
     }
+    else{
+      process.exit();
+    }
   });
 }
 

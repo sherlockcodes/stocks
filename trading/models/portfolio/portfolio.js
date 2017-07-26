@@ -36,6 +36,7 @@ Portfolio.prototype.getReturns = function(userId, callback){
           stock.getPrice(stockData['stockId'],function(price){
             stockData.currentValue = stockData['quantity'] * price;
             stockData.purchaseValue = stockData['quantity'] * stockData['avgBuyPrice'];
+            stockData.currentStockPrice = price;
             returns.push(stockData);  
             if(totalStocks==(iteration+1)) callback(returns);
           });
